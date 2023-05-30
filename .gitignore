@@ -5,3 +5,4 @@ __pycache__/
 astro
 include/minio
 include/mlflow
+include/plots

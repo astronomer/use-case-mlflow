@@ -3,5 +3,3 @@ airflow-provider-mlflow==1.1.0
 apache-airflow-providers-amazon==8.0.0
 mlflow-skinny==2.3.2
 s3fs==2023.5.0
-psutil
-boto3

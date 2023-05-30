@@ -39,6 +39,8 @@ TARGET_COLUMN = "taill"  # tail length in cm
 CATEGORICAL_COLUMNS = ["site", "Pop", "sex"]
 NUMERIC_COLUMNS = ["age", "hdlngth", "skullw", "totlngth", "footlgth"]
 
+XCOM_BUCKET = "localxcom"
+
 
 @dag(
     schedule=None,
@@ -55,7 +57,7 @@ def feature_eng():
     create_buckets_if_not_exists = S3CreateBucketOperator.partial(
         task_id="create_buckets_if_not_exists",
         aws_conn_id=AWS_CONN_ID,
-    ).expand(bucket_name=[DATA_BUCKET_NAME, MLFLOW_ARTIFACT_BUCKET])
+    ).expand(bucket_name=[DATA_BUCKET_NAME, MLFLOW_ARTIFACT_BUCKET, XCOM_BUCKET])
 
     @task_group
     def prepare_mlflow_experiment():
@@ -77,12 +79,15 @@ def feature_eng():
         ):
             "Check if the specified experiment already exists."
 
-            existing_experiment_names = [
-                experiment["name"]
-                for experiment in existing_experiments_information["experiments"]
-            ]
-            if experiment_name in existing_experiment_names:
-                return "prepare_mlflow_experiment.experiment_exists"
+            if existing_experiments_information:
+                existing_experiment_names = [
+                    experiment["name"]
+                    for experiment in existing_experiments_information["experiments"]
+                ]
+                if experiment_name in existing_experiment_names:
+                    return "prepare_mlflow_experiment.experiment_exists"
+                else:
+                    return "prepare_mlflow_experiment.create_experiment"
             else:
                 return "prepare_mlflow_experiment.create_experiment"
 
