@@ -1,0 +1,8 @@
+# These categories will be applied to all DAGs in the repo.
+categories:
+  - AI + Machine Learning
+# List of DAGs that should be published to the Astronomer Registry.
+dags:
+  - path: dags/feature_eng.py
+  - path: dags/train.py
+  - path: dags/predict.py

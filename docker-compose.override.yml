@@ -1,0 +1,41 @@
+version: '3.1'
+services:
+  minio:
+    image: quay.io/minio/minio
+    networks:
+      - airflow
+    command: server /data --console-address ":9001"
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+       - ${PWD}/include/minio:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  
+    restart: always
+    env_file: .env
+  scheduler:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  
+  webserver:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  triggerer:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  postgres:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"                
+  mlflow:
+    image: ghcr.io/mlflow/mlflow
+    networks:
+      - airflow
+    command: bash -c '(pip install -q boto3) && (mlflow server --host 0.0.0.0 --backend-store-uri sqlite:////data/mlflow_backend.db --default-artifact-root s3://mlflowdata)'
+    volumes:
+      - ${PWD}/include/mlflow:/data
+    ports:
+      - 5000:5000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+    env_file: .env
