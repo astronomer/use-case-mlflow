@@ -110,12 +110,12 @@ def predict():
         ax.plot(
             predictions.index,
             predictions["Predictions"],
-            color="blue",
+            color="#1E88E5",
             label="Predicted tail length",
         )
 
         # Plot the target column in green
-        ax.plot(df.index, df["taill"], color="green", label="True tail length")
+        ax.plot(df.index, df["taill"], color="#004D40", label="True tail length")
 
         # Set the title and labels
         ax.set_title("Predicted vs True Possum Tail Lengths")

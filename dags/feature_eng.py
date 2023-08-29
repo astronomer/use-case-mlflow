@@ -158,7 +158,7 @@ def feature_eng():
 
         return df.iloc[
             :, 1:
-        ]  # fetch_california_housing(download_if_missing=True, as_frame=True).frame
+        ]
 
     @aql.dataframe()
     def build_features(
