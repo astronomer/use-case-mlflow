@@ -144,7 +144,7 @@ def train():
             name=REGISTERED_MODEL_NAME,
             tags=[
                 {"key": "model_type", "value": "regression"},
-                {"key": "data", "value": "housing"},
+                {"key": "data", "value": "possum"},
             ],
         )
 

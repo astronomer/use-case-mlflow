@@ -156,9 +156,7 @@ def feature_eng():
         df = pd.read_csv(f"include/{data_file_path}")
         print(df.head())
 
-        return df.iloc[
-            :, 1:
-        ]
+        return df.iloc[:, 1:]
 
     @aql.dataframe()
     def build_features(
@@ -211,7 +209,9 @@ def feature_eng():
     save_data_to_s3 = aql.export_file(
         task_id="save_data_to_s3",
         input_data=extracted_df,
-        output_file=File(os.path.join("s3://", DATA_BUCKET_NAME, FILE_PATH)),
+        output_file=File(
+            path=os.path.join("s3://", DATA_BUCKET_NAME, FILE_PATH), conn_id=AWS_CONN_ID
+        ),
         if_exists="replace",
     )
 

@@ -92,7 +92,6 @@ def predict():
 
     @task
     def list_to_dataframe(column_data):
-        print(column_data)
         df = pd.DataFrame(
             column_data, columns=["Predictions"], index=range(len(column_data))
         )
