@@ -6,3 +6,4 @@ astro
 include/minio
 include/mlflow
 include/plots
+.env

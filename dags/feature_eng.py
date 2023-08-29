@@ -124,10 +124,8 @@ def feature_eng():
             for experiment in experiments_information["experiments"]:
                 if experiment["name"] == experiment_name:
                     return experiment["experiment_id"]
-                else:
-                    raise ValueError(
-                        f"{experiment_name} not found in MLFlow experiments."
-                    )
+
+            raise ValueError(f"{experiment_name} not found in MLFlow experiments.")
 
         experiment_id = get_current_experiment_id(
             experiment_name=EXPERIMENT_NAME,
@@ -158,9 +156,7 @@ def feature_eng():
         df = pd.read_csv(f"include/{data_file_path}")
         print(df.head())
 
-        return df.iloc[
-            :, 1:
-        ]  # fetch_california_housing(download_if_missing=True, as_frame=True).frame
+        return df.iloc[:, 1:]
 
     @aql.dataframe()
     def build_features(
@@ -213,7 +209,9 @@ def feature_eng():
     save_data_to_s3 = aql.export_file(
         task_id="save_data_to_s3",
         input_data=extracted_df,
-        output_file=File(os.path.join("s3://", DATA_BUCKET_NAME, FILE_PATH)),
+        output_file=File(
+            path=os.path.join("s3://", DATA_BUCKET_NAME, FILE_PATH), conn_id=AWS_CONN_ID
+        ),
         if_exists="replace",
     )
 
