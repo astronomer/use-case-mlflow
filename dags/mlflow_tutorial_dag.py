@@ -13,12 +13,14 @@ from pendulum import datetime
 from astro.dataframes.pandas import DataFrame
 from mlflow_provider.hooks.client import MLflowClientHook
 from mlflow_provider.operators.registry import CreateRegisteredModelOperator
+from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
 
 ## MLFlow parameters
 MLFLOW_CONN_ID = "mlflow_default"
+MINIO_CONN_ID = "minio_local"
 MAX_RESULTS_MLFLOW_LIST_EXPERIMENTS = 100
 EXPERIMENT_NAME = "Housing"
-EXPERIMENT_ID = 2
+EXPERIMENT_ID = 1
 REGISTERED_MODEL_NAME = "my_model"
 ARTIFACT_BUCKET = "mlflowdatahousing"
 
@@ -29,6 +31,12 @@ ARTIFACT_BUCKET = "mlflowdatahousing"
     catchup=False,
 )
 def mlflow_tutorial_dag():
+    create_buckets_if_not_exists = S3CreateBucketOperator(
+        task_id="create_buckets_if_not_exists",
+        aws_conn_id=MINIO_CONN_ID,
+        bucket_name=ARTIFACT_BUCKET,
+    )
+
     # 1. Use a hook from the MLFlow provider to interact with MLFlow within a TaskFlow task
     @task
     def create_experiment(experiment_name, artifact_bucket, **context):
@@ -85,11 +93,12 @@ def mlflow_tutorial_dag():
     )
 
     (
+        create_buckets_if_not_exists >> 
         create_experiment(
             experiment_name=EXPERIMENT_NAME, artifact_bucket=ARTIFACT_BUCKET
         )
         >> scale_features(experiment_id=EXPERIMENT_ID)
-        >> create_registered_model
+        >> create_registered_model,
     )
 
 

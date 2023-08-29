@@ -67,8 +67,8 @@ def train():
         for experiment in experiments_information["experiments"]:
             if experiment["name"] == experiment_name:
                 return experiment["experiment_id"]
-            else:
-                raise ValueError(f"{experiment_name} not found in MLFlow experiments.")
+
+        raise ValueError(f"{experiment_name} not found in MLFlow experiments.")
 
     # Train a model
     @aql.dataframe()
