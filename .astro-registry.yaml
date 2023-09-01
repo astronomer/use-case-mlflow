@@ -6,3 +6,4 @@ dags:
   - path: dags/feature_eng.py
   - path: dags/train.py
   - path: dags/predict.py
+  - path: dags/mlflow_tutorial_dag.py

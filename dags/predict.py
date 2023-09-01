@@ -1,5 +1,5 @@
 """
-### Run predictions on a dataset using the MLFLow ModelLoadAndPredictOperator and plot the results
+### Run predictions on a dataset using the MLFLow Provider and plot the results
 
 This DAG utilizes the ModelLoadAndPredictOperator to run predictions on a dataset using a trained MLFlow model. The resulting
 predictions are plotted against the true values.

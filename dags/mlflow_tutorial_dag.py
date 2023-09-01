@@ -93,8 +93,8 @@ def mlflow_tutorial_dag():
     )
 
     (
-        create_buckets_if_not_exists >> 
-        create_experiment(
+        create_buckets_if_not_exists
+        >> create_experiment(
             experiment_name=EXPERIMENT_NAME, artifact_bucket=ARTIFACT_BUCKET
         )
         >> scale_features(experiment_id=EXPERIMENT_ID)
