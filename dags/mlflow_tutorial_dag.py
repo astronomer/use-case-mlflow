@@ -19,7 +19,6 @@ MLFLOW_CONN_ID = "mlflow_default"
 MINIO_CONN_ID = "minio_local"
 MAX_RESULTS_MLFLOW_LIST_EXPERIMENTS = 100
 EXPERIMENT_NAME = "Housing"
-EXPERIMENT_ID = 1
 REGISTERED_MODEL_NAME = "my_model"
 ARTIFACT_BUCKET = "mlflowdatahousing"
 
@@ -53,7 +52,7 @@ def mlflow_tutorial_dag():
             },
         ).json()
 
-        return new_experiment_information
+        return new_experiment_information["experiment_id"]
 
     # 2. Use a mlflow.sklearn autologging in a TaskFlow task
     @task
@@ -91,12 +90,14 @@ def mlflow_tutorial_dag():
         ],
     )
 
+    experiment_created = create_experiment(
+        experiment_name=EXPERIMENT_NAME, artifact_bucket=ARTIFACT_BUCKET
+    )
+
     (
         create_buckets_if_not_exists
-        >> create_experiment(
-            experiment_name=EXPERIMENT_NAME, artifact_bucket=ARTIFACT_BUCKET
-        )
-        >> scale_features(experiment_id=EXPERIMENT_ID)
+        >> experiment_created
+        >> scale_features(experiment_id=experiment_created)
         >> create_registered_model,
     )
 
